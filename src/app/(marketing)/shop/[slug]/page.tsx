@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { sampleProducts } from "@/lib/data/sample-products";
+import { getShopProductBySlug, getShopProducts } from "@/lib/data/live-products";
 import { formatShopPrice } from "@/lib/format/money";
 import { ProductActions } from "@/components/shop/product-actions";
 
@@ -10,18 +10,19 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const p = sampleProducts.find((x) => x.slug === slug);
+  const p = await getShopProductBySlug(slug);
   if (!p) return { title: "Product" };
   return { title: p.name, description: p.description };
 }
 
 export async function generateStaticParams() {
-  return sampleProducts.map((p) => ({ slug: p.slug }));
+  const products = await getShopProducts();
+  return products.map((p) => ({ slug: p.slug }));
 }
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const p = sampleProducts.find((x) => x.slug === slug);
+  const p = await getShopProductBySlug(slug);
   if (!p) notFound();
 
   return (

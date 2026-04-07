@@ -4,16 +4,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { m } from "framer-motion";
 import { sampleProducts } from "@/lib/data/sample-products";
+import type { LiveProduct } from "@/lib/data/live-products";
 import { formatShopPrice } from "@/lib/format/money";
 import { useCartStore } from "@/stores/cart-store";
 import { toast } from "sonner";
 
-export function ProductGrid() {
+type ProductGridProps = {
+  products?: LiveProduct[];
+};
+
+export function ProductGrid({ products = sampleProducts }: ProductGridProps) {
   const addLine = useCartStore((s) => s.addLine);
 
   return (
     <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-      {sampleProducts.map((p, i) => (
+      {products.map((p, i) => (
         <m.article
           key={p.id}
           className="group flex flex-col overflow-hidden rounded-3xl border border-kabuki-pink/25 bg-white/70 shadow-soft backdrop-blur-md"

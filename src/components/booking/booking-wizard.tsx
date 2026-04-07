@@ -8,30 +8,9 @@ import { createClient } from "@/lib/supabase/client";
 import { useBookingDraftStore } from "@/stores/booking-draft-store";
 import { MARKET } from "@/lib/constants/market";
 import { formatShopPrice } from "@/lib/format/money";
+import type { LiveService } from "@/lib/data/live-services";
 import { m } from "framer-motion";
 import { useEffect, useState } from "react";
-
-/** Matches `supabase/seed.sql` service IDs */
-const demoServices = [
-  {
-    id: "11111111-1111-1111-1111-111111111111",
-    name: "Bridal editorial",
-    duration: 120,
-    price: 8500,
-  },
-  {
-    id: "22222222-2222-2222-2222-222222222222",
-    name: "Soft glam portrait",
-    duration: 90,
-    price: 4200,
-  },
-  {
-    id: "33333333-3333-3333-3333-333333333333",
-    name: "Private masterclass",
-    duration: 180,
-    price: 11500,
-  },
-];
 
 const addOnOptions = [
   { id: "lashes", label: "Premium lashes", price: 120 },
@@ -48,7 +27,11 @@ function bookingTimezoneLabel() {
   }
 }
 
-export function BookingWizard() {
+type BookingWizardProps = {
+  services: LiveService[];
+};
+
+export function BookingWizard({ services }: BookingWizardProps) {
   const [step, setStep] = useState(0);
   const [tzLabel, setTzLabel] = useState<string | undefined>(undefined);
   const draft = useBookingDraftStore();
@@ -126,7 +109,7 @@ export function BookingWizard() {
       return;
     }
 
-    const service = demoServices.find((s) => s.id === values.serviceId);
+    const service = services.find((s) => s.id === values.serviceId);
     const start = new Date(values.startAt);
     const end = new Date(start.getTime() + (service?.duration ?? 60) * 60_000);
 
@@ -197,7 +180,7 @@ export function BookingWizard() {
               Choose your service
             </h3>
             <div className="grid gap-3">
-              {demoServices.map((s) => (
+              {services.map((s) => (
                 <label
                   key={s.id}
                   className={`flex cursor-pointer items-center justify-between rounded-2xl border px-5 py-4 transition hover:border-kabuki-pink ${
@@ -365,7 +348,7 @@ export function BookingWizard() {
               <div className="flex justify-between gap-4">
                 <dt className="text-kabuki-navy/45">Service</dt>
                 <dd className="text-right font-medium text-kabuki-navy">
-                  {demoServices.find((s) => s.id === serviceIdW)?.name ?? "—"}
+                  {services.find((s) => s.id === serviceIdW)?.name ?? "—"}
                 </dd>
               </div>
               <div className="flex justify-between gap-4">

@@ -50,14 +50,62 @@ export async function GET(request: Request) {
   if (success && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
       const admin = createAdminClient();
-      await admin
+      const orderId = typeof tx?.metadata?.order_id === "string" ? tx.metadata.order_id : null;
+      const expectedMinor =
+        typeof tx?.metadata?.expected_amount_minor === "number"
+          ? tx.metadata.expected_amount_minor
+          : null;
+      const expectedCurrency =
+        typeof tx?.metadata?.expected_currency === "string" ? tx.metadata.expected_currency : null;
+
+      const orderQuery = admin
         .from("orders")
-        .update({
-          status: "paid",
-          paystack_reference: reference,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("paystack_reference", reference);
+        .select("id, total, currency, status, paystack_reference")
+        .eq("paystack_reference", reference)
+        .maybeSingle();
+      const { data: order } = await orderQuery;
+      if (order) {
+        const totalMinor = Math.round(Number(order.total) * 100);
+        const amountMatches = expectedMinor == null ? true : totalMinor === expectedMinor;
+        const txAmountMatches = typeof tx?.amount === "number" ? tx.amount === totalMinor : true;
+        const currencyMatches =
+          expectedCurrency == null ? true : String(order.currency).toUpperCase() === expectedCurrency;
+        const paidStateOkay = order.status === "paid";
+
+        if (amountMatches && txAmountMatches && currencyMatches) {
+          if (!paidStateOkay) {
+            await admin
+              .from("orders")
+              .update({
+                status: "paid",
+                paystack_reference: reference,
+                updated_at: new Date().toISOString(),
+              })
+              .eq("id", order.id);
+          }
+        } else {
+          await admin
+            .from("orders")
+            .update({
+              status: "failed",
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", order.id);
+          return NextResponse.json(
+            { ok: false, error: "Payment verification mismatch. Please contact support." },
+            { status: 400 },
+          );
+        }
+      } else if (orderId) {
+        await admin
+          .from("orders")
+          .update({
+            status: "paid",
+            paystack_reference: reference,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", orderId);
+      }
     } catch {
       /* Order row may not exist yet — create via checkout pipeline with service role */
     }

@@ -1,24 +1,37 @@
 import type { Metadata } from "next";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { formatShopPrice } from "@/lib/format/money";
 
 export const metadata: Metadata = {
   title: "Admin",
 };
 
-const kpis = [
-  { label: "Revenue (30d)", value: "—", hint: "Wire to `orders` + Paystack" },
-  { label: "Bookings", value: "—", hint: "Realtime `bookings` board" },
-  { label: "New clients", value: "—", hint: "`profiles` growth" },
-  { label: "Inventory alerts", value: "—", hint: "`products.inventory`" },
-];
+export default async function AdminOverviewPage() {
+  const admin = createAdminClient();
+  const [ordersRes, bookingsRes, profilesRes, inventoryRes] = await Promise.all([
+    admin.from("orders").select("total", { count: "exact" }).eq("status", "paid"),
+    admin
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .in("status", ["pending", "awaiting_approval", "confirmed"]),
+    admin.from("profiles").select("id", { count: "exact", head: true }),
+    admin.from("products").select("id", { count: "exact", head: true }).lte("inventory", 3),
+  ]);
 
-export default function AdminOverviewPage() {
+  const revenue = (ordersRes.data ?? []).reduce((sum, row) => sum + Number(row.total ?? 0), 0);
+  const kpis = [
+    { label: "Paid revenue", value: formatShopPrice(revenue), hint: "orders.status = paid" },
+    { label: "Open bookings", value: `${bookingsRes.count ?? 0}`, hint: "pending + confirmed" },
+    { label: "Total clients", value: `${profilesRes.count ?? 0}`, hint: "profiles table" },
+    { label: "Low stock SKUs", value: `${inventoryRes.count ?? 0}`, hint: "inventory <= 3" },
+  ];
+
   return (
     <div className="space-y-10">
       <header>
         <h1 className="font-display text-3xl sm:text-4xl">At-a-glance</h1>
         <p className="mt-2 max-w-2xl text-sm text-white/55">
-          SaaS-grade control plane — swap placeholders with Supabase aggregates and charting (e.g.
-          Tremor or Recharts) when you connect production data.
+          Live operational metrics from Supabase. Use this as your daily command center.
         </p>
       </header>
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">

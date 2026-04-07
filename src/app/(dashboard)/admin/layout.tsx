@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { KabukiLogo } from "@/components/brand/kabuki-logo";
+import { createClient } from "@/lib/supabase/server";
 
 const nav = [
   { href: "/admin", label: "Overview" },
@@ -10,7 +12,29 @@ const nav = [
   { href: "/admin/settings", label: "Settings" },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/auth?next=/admin");
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+  if (!profile || (profile.role !== "admin" && profile.role !== "staff")) {
+    redirect("/account");
+  }
+
+  async function signOut() {
+    "use server";
+    const server = await createClient();
+    await server.auth.signOut();
+    redirect("/auth");
+  }
+
   return (
     <div className="min-h-screen bg-kabuki-navy text-kabuki-white">
       <div className="border-b border-white/10 bg-kabuki-navy/95 backdrop-blur-xl">
@@ -23,12 +47,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <KabukiLogo variant="onDark" className="[&_img]:h-7 [&_img]:sm:h-8" />
             </Link>
           </div>
-          <Link
-            href="/"
-            className="text-sm font-medium text-white/60 transition hover:text-white"
-          >
-            View storefront
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="text-sm font-medium text-white/60 transition hover:text-white"
+            >
+              View storefront
+            </Link>
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/75 hover:bg-white/10"
+              >
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
         <nav
           className="mx-auto flex max-w-7xl flex-wrap gap-2 px-5 pb-4 sm:px-8"

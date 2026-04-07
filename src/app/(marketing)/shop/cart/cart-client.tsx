@@ -53,7 +53,8 @@ export function CartClient() {
         body: JSON.stringify({
           email,
           amount: subtotal,
-          metadata: { items: lines.map((l) => ({ id: l.productId, q: l.quantity })) },
+          items: lines.map((l) => ({ productId: l.productId, quantity: l.quantity })),
+          metadata: { source: "web-cart" },
         }),
       });
       const data = await res.json();

@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { KabukiLogo } from "@/components/brand/kabuki-logo";
+import { createClient } from "@/lib/supabase/server";
 
 const links = [
   { href: "/account", label: "Overview" },
@@ -8,7 +10,20 @@ const links = [
   { href: "/account/looks", label: "Saved looks" },
 ];
 
-export default function AccountLayout({ children }: { children: React.ReactNode }) {
+export default async function AccountLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/auth?next=/account");
+
+  async function signOut() {
+    "use server";
+    const server = await createClient();
+    await server.auth.signOut();
+    redirect("/auth");
+  }
+
   return (
     <div className="min-h-screen bg-kabuki-grey">
       <div className="border-b border-kabuki-pink/20 bg-kabuki-white/80 backdrop-blur-md">
@@ -21,12 +36,22 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
               <KabukiLogo className="[&_img]:h-7 [&_img]:sm:h-8" />
             </Link>
           </div>
-          <Link
-            href="/"
-            className="text-sm font-semibold text-kabuki-navy/60 underline-offset-4 hover:text-kabuki-navy hover:underline"
-          >
-            ← Back to site
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="text-sm font-semibold text-kabuki-navy/60 underline-offset-4 hover:text-kabuki-navy hover:underline"
+            >
+              ← Back to site
+            </Link>
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="rounded-full border border-kabuki-navy/20 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-kabuki-navy/70 hover:bg-kabuki-pink/15"
+              >
+                Sign out
+              </button>
+            </form>
+          </div>
         </div>
         <nav className="mx-auto flex max-w-6xl gap-2 overflow-x-auto px-5 pb-4 sm:px-8" aria-label="Account">
           {links.map((l) => (

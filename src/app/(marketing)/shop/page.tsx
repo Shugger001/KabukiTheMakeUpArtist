@@ -4,16 +4,17 @@ import { ProductGrid } from "@/components/shop/product-grid";
 import { Reveal } from "@/components/motion/reveal";
 import { BRAND } from "@/lib/constants/brand";
 import { formatShopPrice } from "@/lib/format/money";
-import { sampleProducts } from "@/lib/data/sample-products";
-
-const fromPrice = Math.min(...sampleProducts.map((p) => p.price));
+import { getShopProducts } from "@/lib/data/live-products";
 
 export const metadata: Metadata = {
   title: "Shop",
   description: `Curated beauty essentials from ${BRAND.fullName} — shipped across Ghana, prices in GHS.`,
 };
 
-export default function ShopPage() {
+export default async function ShopPage() {
+  const products = await getShopProducts();
+  const fromPrice = Math.min(...products.map((p) => p.price));
+
   return (
     <div className="bg-kabuki-grey py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -39,7 +40,7 @@ export default function ShopPage() {
           </Link>
         </div>
         <div className="mt-14">
-          <ProductGrid />
+          <ProductGrid products={products} />
         </div>
       </div>
     </div>
