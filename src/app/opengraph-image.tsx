@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+/** Node avoids Vercel Edge’s ~1MB bundle cap; `ImageResponse` runs fine on Node. */
+export const runtime = "nodejs";
 
 export const alt = "Kabuki The MakeUp Girl — Luxury makeup artistry";
 
