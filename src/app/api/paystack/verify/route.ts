@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { applyPaystackVerification } from "@/lib/payments/paystack-order-state";
 
 const querySchema = z.object({
   reference: z.string().min(3),
@@ -47,67 +48,19 @@ export async function GET(request: Request) {
   const tx = payload.data;
   const success = tx?.status === "success";
 
-  if (success && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  if (process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
       const admin = createAdminClient();
-      const orderId = typeof tx?.metadata?.order_id === "string" ? tx.metadata.order_id : null;
-      const expectedMinor =
-        typeof tx?.metadata?.expected_amount_minor === "number"
-          ? tx.metadata.expected_amount_minor
-          : null;
-      const expectedCurrency =
-        typeof tx?.metadata?.expected_currency === "string" ? tx.metadata.expected_currency : null;
-
-      const orderQuery = admin
-        .from("orders")
-        .select("id, total, currency, status, paystack_reference")
-        .eq("paystack_reference", reference)
-        .maybeSingle();
-      const { data: order } = await orderQuery;
-      if (order) {
-        const totalMinor = Math.round(Number(order.total) * 100);
-        const amountMatches = expectedMinor == null ? true : totalMinor === expectedMinor;
-        const txAmountMatches = typeof tx?.amount === "number" ? tx.amount === totalMinor : true;
-        const currencyMatches =
-          expectedCurrency == null ? true : String(order.currency).toUpperCase() === expectedCurrency;
-        const paidStateOkay = order.status === "paid";
-
-        if (amountMatches && txAmountMatches && currencyMatches) {
-          if (!paidStateOkay) {
-            await admin
-              .from("orders")
-              .update({
-                status: "paid",
-                paystack_reference: reference,
-                updated_at: new Date().toISOString(),
-              })
-              .eq("id", order.id);
-          }
-        } else {
-          await admin
-            .from("orders")
-            .update({
-              status: "failed",
-              updated_at: new Date().toISOString(),
-            })
-            .eq("id", order.id);
-          return NextResponse.json(
-            { ok: false, error: "Payment verification mismatch. Please contact support." },
-            { status: 400 },
-          );
-        }
-      } else if (orderId) {
-        await admin
-          .from("orders")
-          .update({
-            status: "paid",
-            paystack_reference: reference,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", orderId);
-      }
+      await applyPaystackVerification(admin, {
+        reference,
+        amountMinor: typeof tx?.amount === "number" ? tx.amount : null,
+        currency: tx?.currency ?? null,
+        metadata: (tx?.metadata as Record<string, unknown> | undefined) ?? null,
+        paid: success,
+        eventType: "redirect_verify",
+      });
     } catch {
-      /* Order row may not exist yet — create via checkout pipeline with service role */
+      /* keep client response deterministic even if persistence fails */
     }
   }
 

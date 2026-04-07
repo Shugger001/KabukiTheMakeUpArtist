@@ -26,9 +26,12 @@ export default async function AccountBookingsPage() {
                 {(b.services as { name?: string } | null)?.name ?? "Service"}
               </p>
               <p className="text-sm text-kabuki-navy/60">{new Date(b.start_at).toLocaleString()}</p>
-              <p className="mt-1 text-xs uppercase tracking-wider text-kabuki-navy/50">
-                {b.status} · {b.location_type}
+              <p className="mt-1 text-xs text-kabuki-navy/50">
+                {b.location_type === "home" ? "Your venue / home" : "Accra studio"}
               </p>
+              <span className="mt-2 inline-flex rounded-full border border-kabuki-pink/35 bg-kabuki-pink/10 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wider text-kabuki-navy/70">
+                {b.status.replaceAll("_", " ")}
+              </span>
             </li>
           ))}
         </ul>

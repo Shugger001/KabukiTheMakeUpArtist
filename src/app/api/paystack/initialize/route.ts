@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   const uniqueProductIds = [...new Set(items.map((item) => item.productId))];
   const { data: products, error: productsError } = await admin
     .from("products")
-    .select("id, price, active")
+    .select("id, price, active, inventory")
     .in("id", uniqueProductIds)
     .eq("active", true);
   if (productsError || !products || products.length === 0) {
@@ -50,13 +50,20 @@ export async function POST(request: Request) {
   }
 
   const byId = new Map(
-    products.map((p) => [p.id as string, typeof p.price === "number" ? p.price : Number(p.price)]),
+    products.map((p) => [
+      p.id as string,
+      {
+        price: typeof p.price === "number" ? p.price : Number(p.price),
+        inventory: typeof p.inventory === "number" ? p.inventory : Number(p.inventory),
+      },
+    ]),
   );
   const normalizedItems = items
     .map((item) => {
-      const unitPrice = byId.get(item.productId);
-      if (unitPrice == null || Number.isNaN(unitPrice)) return null;
-      return { product_id: item.productId, quantity: item.quantity, unit_price: unitPrice };
+      const row = byId.get(item.productId);
+      if (!row || Number.isNaN(row.price) || Number.isNaN(row.inventory)) return null;
+      if (row.inventory < item.quantity) return null;
+      return { product_id: item.productId, quantity: item.quantity, unit_price: row.price };
     })
     .filter((x): x is { product_id: string; quantity: number; unit_price: number } => Boolean(x));
   if (normalizedItems.length === 0) {

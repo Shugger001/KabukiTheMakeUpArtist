@@ -24,7 +24,8 @@ const FB = {
 } as const;
 
 export const heroEditorial = {
-  src: publicMarketingSrc("editorial/hero.webp", FB.hero),
+  // User-provided hero portrait (keeps existing hero overlays/motion in the component).
+  src: "/editorial/hero-imported.png",
   alt: "Portrait of a Black woman — soft editorial light, Ghana",
 };
 

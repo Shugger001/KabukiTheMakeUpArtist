@@ -9,7 +9,7 @@ export default async function AccountOrdersPage() {
   const { data } = user
     ? await supabase
         .from("orders")
-        .select("id, status, total, currency, created_at")
+        .select("id, status, total, currency, created_at, paystack_reference, order_items(quantity, unit_price, products(name))")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
     : { data: [] };
@@ -27,7 +27,20 @@ export default async function AccountOrdersPage() {
               <p className="text-sm text-kabuki-navy/60">
                 {new Date(order.created_at).toLocaleString()} · {formatShopPrice(Number(order.total))}
               </p>
-              <p className="mt-1 text-xs uppercase tracking-wider text-kabuki-navy/50">{order.status}</p>
+              <p className="mt-1 text-xs text-kabuki-navy/45">Ref: {order.paystack_reference ?? "—"}</p>
+              <span className="mt-2 inline-flex rounded-full border border-kabuki-pink/35 bg-kabuki-pink/10 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wider text-kabuki-navy/70">
+                {order.status.replaceAll("_", " ")}
+              </span>
+              <ul className="mt-3 space-y-1 text-xs text-kabuki-navy/60">
+                {((order.order_items as Array<{ quantity?: number; unit_price?: number; products?: { name?: string } }> | null) ?? []).map(
+                  (line, idx) => (
+                    <li key={`${order.id}-${idx}`}>
+                      {(line.products?.name ?? "Item")} × {line.quantity ?? 0} ·{" "}
+                      {formatShopPrice(Number(line.unit_price ?? 0))}
+                    </li>
+                  ),
+                )}
+              </ul>
             </li>
           ))}
         </ul>

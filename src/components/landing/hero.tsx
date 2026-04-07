@@ -53,7 +53,7 @@ export function LandingHero() {
         {heroLoopVideoSrc ? (
           <div className="hero-loop-video-wrap absolute inset-0" aria-hidden>
             <video
-              className="hero-loop-video absolute inset-0 h-full w-full object-cover object-[center_22%] opacity-95 contrast-[0.92] saturate-[0.82]"
+              className="hero-loop-video absolute inset-0 h-full w-full object-cover object-[center_18%] sm:object-[center_22%] opacity-95 contrast-[0.92] saturate-[0.82]"
               src={heroLoopVideoSrc}
               poster={heroEditorial.src}
               muted
@@ -72,7 +72,7 @@ export function LandingHero() {
           fetchPriority="high"
           sizes="100vw"
           className={cn(
-            "object-cover object-[center_22%]",
+            "object-cover object-[center_18%] sm:object-[center_22%]",
             heroLoopVideoSrc && "hero-editorial-still--layered opacity-[0.84]",
           )}
         />
