@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --kabuki-pink: #f8c8dc;
+  --kabuki-navy: #0a1a2f;
+  --kabuki-white: #ffffff;
+  --kabuki-grey: #f9fafb;
+  --kabuki-muted: rgba(10, 26, 47, 0.55);
+  --background: var(--kabuki-grey);
+  --foreground: var(--kabuki-navy);
+  /* Bar height — logo scales inside it (see kabuki-logo.tsx) */
+  --header-height: 3.25rem;
+  --header-logo-scale: 1.18;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-kabuki-pink: var(--kabuki-pink);
+  --color-kabuki-navy: var(--kabuki-navy);
+  --color-kabuki-white: var(--kabuki-white);
+  --color-kabuki-grey: var(--kabuki-grey);
+  --color-kabuki-muted: var(--kabuki-muted);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, "Times New Roman", serif;
+  --shadow-soft: 0 24px 80px -32px rgba(10, 26, 47, 0.18);
+  --shadow-glass: 0 8px 40px rgba(10, 26, 47, 0.08);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-kabuki-grey text-kabuki-navy antialiased;
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--kabuki-pink) 55%, white);
+    color: var(--kabuki-navy);
+  }
+  :focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--kabuki-pink) 65%, var(--kabuki-navy));
+    outline-offset: 3px;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .hero-loop-video-wrap {
+    contain: strict;
+  }
+  .hero-loop-video {
+    transform: scale(1.02);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-loop-video-wrap {
+      display: none;
+    }
+    .hero-editorial-still--layered {
+      opacity: 1 !important;
+    }
+  }
+}
+
+@utility glass-panel {
+  @apply border border-white/40 bg-white/55 shadow-[var(--shadow-glass)] backdrop-blur-xl;
+}
+
+@utility text-balance {
+  text-wrap: balance;
 }
