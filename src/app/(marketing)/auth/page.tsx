@@ -50,6 +50,13 @@ export default function AuthPage() {
         toast.error(error.message);
         return;
       }
+      const bootstrapRes = await fetch("/api/auth/bootstrap-profile", { method: "POST" });
+      if (!bootstrapRes.ok) {
+        const payload = (await bootstrapRes.json().catch(() => ({}))) as { error?: string };
+        toast.message("Signed in, but profile bootstrap needs attention.", {
+          description: payload.error ?? "Please contact support if account data looks incomplete.",
+        });
+      }
       toast.success("Signed in");
       router.push(nextPath);
       router.refresh();
