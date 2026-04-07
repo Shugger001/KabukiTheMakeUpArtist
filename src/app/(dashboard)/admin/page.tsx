@@ -6,7 +6,21 @@ export const metadata: Metadata = {
   title: "Admin",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminOverviewPage() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return (
+      <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-10">
+        <h1 className="font-display text-3xl">At-a-glance</h1>
+        <p className="mt-3 text-sm text-white/60">
+          Configure <code className="text-kabuki-pink">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+          <code className="text-kabuki-pink">SUPABASE_SERVICE_ROLE_KEY</code> to load live admin KPIs.
+        </p>
+      </div>
+    );
+  }
+
   const admin = createAdminClient();
   const [ordersRes, bookingsRes, profilesRes, inventoryRes] = await Promise.all([
     admin.from("orders").select("total", { count: "exact" }).eq("status", "paid"),

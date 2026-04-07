@@ -1,6 +1,8 @@
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
+
 const statusOptions = [
   "awaiting_approval",
   "confirmed",
@@ -23,6 +25,19 @@ async function updateBookingStatus(formData: FormData) {
 }
 
 export default async function AdminBookingsPage() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return (
+      <div className="rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-10">
+        <h1 className="font-display text-3xl">Bookings</h1>
+        <p className="mt-3 text-sm text-white/60">
+          Configure <code className="text-kabuki-pink">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+          <code className="text-kabuki-pink">SUPABASE_SERVICE_ROLE_KEY</code> in your deployment
+          environment to load admin booking data.
+        </p>
+      </div>
+    );
+  }
+
   const admin = createAdminClient();
   const { data } = await admin
     .from("bookings")

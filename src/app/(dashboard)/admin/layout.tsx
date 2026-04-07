@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { KabukiLogo } from "@/components/brand/kabuki-logo";
 import { createClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 const nav = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/bookings", label: "Bookings" },

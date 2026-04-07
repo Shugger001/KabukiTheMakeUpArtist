@@ -2,6 +2,8 @@ import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatShopPrice } from "@/lib/format/money";
 
+export const dynamic = "force-dynamic";
+
 type ProductRow = {
   id: string;
   name: string;
@@ -26,6 +28,19 @@ async function updateProduct(formData: FormData) {
 }
 
 export default async function AdminProductsPage() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return (
+      <div className="space-y-6 rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-10">
+        <h1 className="font-display text-3xl">Products & inventory</h1>
+        <p className="text-sm text-white/60">
+          Configure <code className="text-kabuki-pink">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+          <code className="text-kabuki-pink">SUPABASE_SERVICE_ROLE_KEY</code> in Vercel to enable
+          live product management.
+        </p>
+      </div>
+    );
+  }
+
   const admin = createAdminClient();
   const { data } = await admin
     .from("products")
