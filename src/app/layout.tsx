@@ -44,11 +44,20 @@ export const metadata: Metadata = {
     siteName: BRAND.fullName,
     title: BRAND.fullName,
     description: `Luxury makeup in ${MARKET.city}, ${MARKET.country} — bespoke looks for African skin and celebration.`,
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "Kabuki The MakeUp Girl — Luxury makeup artistry",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: BRAND.fullName,
     description: `Luxury makeup in ${MARKET.city} — editorial artistry for Ghana & Africa.`,
+    images: ["/og.png"],
   },
 };
 
