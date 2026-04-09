@@ -52,9 +52,10 @@ export default async function BookPage() {
             Your session, composed like an editorial.
           </h1>
           <p className="mt-5 max-w-xl text-kabuki-navy/60">
-            Select a service, choose a time, and tell us whether we meet at the {MARKET.city} studio
-            or your venue. Availability syncs when Supabase is connected — confirm and manage
-            everything from the dashboard.
+            Bridal trials, wedding day glam, and every other appointment — pick your service, choose
+            a time, and say whether we meet at the {MARKET.city} studio or your venue. When Supabase is
+            connected, availability stays in sync; you can confirm and manage everything from your
+            dashboard.
           </p>
         </Reveal>
         <div className="mt-14">

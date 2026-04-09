@@ -11,29 +11,28 @@ const quotes = [
         felt more myself — just <span className="italic">elevated</span>.
       </>
     ),
-    name: "Ama Serwaa",
-    context: "Traditional wedding · Kumasi",
+    name: "Matilda",
+    context: "Bride · Tema",
   },
   {
     quote: (
       <>
-        The studio felt like a <span className="italic">sanctuary</span> in Accra. Every brushstroke
+        The studio felt like a <span className="italic">sanctuary</span>. Every brushstroke
         intentional — she truly gets how our humidity behaves on the skin.
       </>
     ),
-    name: "Efua Mensah",
-    context: "Editorial shoot · Accra",
+    name: "Fafa",
+    context: "Bride · Pokuase",
   },
   {
     quote: (
       <>
-        Home visit in East Legon was seamless. Punctual, immaculate kit, and a look that held through
-        the full reception —
+        Punctual, immaculate kit, and a look that held through the full reception —
         <span className="italic">from sun to dance floor</span>.
       </>
     ),
-    name: "Naa Dede",
-    context: "Private client · Greater Accra",
+    name: "Malwine",
+    context: "Bride · Cape Coast",
   },
 ];
 
@@ -46,10 +45,11 @@ export function TestimonialsSection() {
             Testimonials
           </p>
           <h2 className="mt-3 max-w-xl font-display text-[clamp(2rem,5vw,3.25rem)] tracking-[-0.028em] text-kabuki-navy">
-            Voices from Ghana &amp; beyond
+            Voices from Ghana
           </h2>
           <p className="mt-4 max-w-md text-[0.9375rem] leading-relaxed text-kabuki-navy/58 sm:text-[1.02rem]">
-            Brides, creatives, and everyday icons — where technique meets West African warmth.
+            A few of the brides I&apos;ve had the pleasure to work with — real women, real wedding
+            days.
           </p>
         </Reveal>
 
