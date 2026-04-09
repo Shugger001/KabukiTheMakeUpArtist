@@ -24,6 +24,26 @@ export default function BlogPage() {
         <div className="mt-14 rounded-3xl border border-dashed border-kabuki-pink/35 bg-white/60 p-12 text-center text-sm text-kabuki-navy/50">
           No published posts yet — seed content from the admin console.
         </div>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <article className="rounded-2xl border border-kabuki-pink/25 bg-white/70 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-kabuki-navy/45">
+              Keyword cluster
+            </p>
+            <p className="mt-2 text-sm text-kabuki-navy/70">
+              Publish guides around “bridal makeup Ghana”, “long-wear makeup Accra humidity”, and
+              “makeup artist Kumasi pricing”.
+            </p>
+          </article>
+          <article className="rounded-2xl border border-kabuki-pink/25 bg-white/70 p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-kabuki-navy/45">
+              Social snippets
+            </p>
+            <p className="mt-2 text-sm text-kabuki-navy/70">
+              Every article should include a 30-second reel hook, two carousel captions, and one
+              FAQ schema answer.
+            </p>
+          </article>
+        </div>
       </div>
     </div>
   );

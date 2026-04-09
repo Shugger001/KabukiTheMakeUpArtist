@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { MARKET } from "@/lib/constants/market";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/security/rate-limit";
 import { paystackInitializeSchema } from "@/lib/validation/checkout";
 
 /**
@@ -9,6 +10,10 @@ import { paystackInitializeSchema } from "@/lib/validation/checkout";
  * Amount is accepted in major units (e.g. GHS cedis) and converted to pesewas (×100).
  */
 export async function POST(request: Request) {
+  const origin = request.headers.get("x-forwarded-for") ?? request.headers.get("host") ?? "unknown";
+  if (!rateLimit(`paystack-init:${origin}`, 20, 60_000)) {
+    return NextResponse.json({ error: "Too many checkout attempts. Please wait a minute." }, { status: 429 });
+  }
   const secret = process.env.PAYSTACK_SECRET_KEY;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://127.0.0.1:3100";
 

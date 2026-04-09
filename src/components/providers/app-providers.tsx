@@ -2,10 +2,12 @@
 
 import { LazyMotion, domAnimation } from "framer-motion";
 import { Toaster } from "sonner";
+import { PostHogInit } from "@/components/analytics/posthog-init";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <LazyMotion features={domAnimation} strict>
+      <PostHogInit />
       {children}
       <Toaster
         position="top-center"

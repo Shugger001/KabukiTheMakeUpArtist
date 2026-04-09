@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendTransactionalMessage } from "@/lib/notifications/send-transactional";
 
 export const dynamic = "force-dynamic";
 
@@ -62,6 +63,17 @@ async function updateBookingStatus(formData: FormData) {
       body,
       type: "booking_status",
     });
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("phone")
+      .eq("id", existing.user_id)
+      .maybeSingle();
+    await sendTransactionalMessage({
+      toPhone: profile?.phone ?? null,
+      subject: "Booking update",
+      html: `<p>${body}</p>`,
+      smsText: body,
+    });
   }
 
   revalidatePath("/admin/bookings");
@@ -94,7 +106,7 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
   const admin = createAdminClient();
   let query = admin
     .from("bookings")
-    .select("id, start_at, status, location_type, address, profiles(full_name), services(name)")
+    .select("id, start_at, status, location_type, address, profiles(full_name,phone), services(name)")
     .order("start_at", { ascending: false });
   if (statusFilter !== "all") query = query.eq("status", statusFilter);
   if (fromDate) query = query.gte("start_at", new Date(fromDate).toISOString());

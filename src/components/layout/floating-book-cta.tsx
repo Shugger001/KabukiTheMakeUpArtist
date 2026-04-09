@@ -13,9 +13,12 @@ export function FloatingBookCta() {
     >
       <Link
         href="/book"
-        className="flex items-center gap-2 rounded-full bg-kabuki-navy px-5 py-3 text-sm font-semibold text-kabuki-white shadow-[0_20px_50px_-12px_rgba(10,26,47,0.45)] ring-2 ring-kabuki-pink/40"
+        className="flex flex-col items-start gap-0 rounded-2xl bg-kabuki-navy px-4 py-2.5 text-kabuki-white shadow-[0_20px_50px_-12px_rgba(10,26,47,0.45)] ring-2 ring-kabuki-pink/40"
       >
-        Book now
+        <span className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-kabuki-pink/90">
+          Available this week in Accra
+        </span>
+        <span className="text-sm font-semibold">Book now</span>
       </Link>
     </m.div>
   );

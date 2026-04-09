@@ -10,11 +10,18 @@ import { heroEditorial } from "@/lib/constants/editorial-media";
 import { getHeroLoopVideoSrc } from "@/lib/constants/hero-video";
 import { MagneticWrap } from "@/components/motion/magnetic-wrap";
 import { cn } from "@/lib/utils/cn";
+import { track } from "@/lib/analytics/track";
 
 const noiseDataUrl =
   "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")";
 
 const heroLoopVideoSrc = getHeroLoopVideoSrc();
+
+function heroResponsiveWebpSrcSet(src: string): string | null {
+  if (!src.startsWith("/editorial/") || !src.endsWith(".png")) return null;
+  const stem = src.slice("/editorial/".length, -".png".length);
+  return [640, 960, 1280, 1920].map((w) => `/editorial/${stem}-${w}.webp ${w}w`).join(", ");
+}
 
 export function LandingHero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -64,18 +71,44 @@ export function LandingHero() {
             />
           </div>
         ) : null}
-        <Image
-          src={heroEditorial.src}
-          alt={heroEditorial.alt}
-          fill
-          priority
-          fetchPriority="high"
-          sizes="100vw"
-          className={cn(
-            "object-cover object-[center_18%] sm:object-[center_22%]",
-            heroLoopVideoSrc && "hero-editorial-still--layered opacity-[0.84]",
-          )}
-        />
+        {heroResponsiveWebpSrcSet(heroEditorial.src) ? (
+          <span
+            className={cn(
+              "absolute inset-0 block",
+              heroLoopVideoSrc && "hero-editorial-still--layered opacity-[0.84]",
+            )}
+          >
+            <picture className="absolute inset-0 block h-full w-full">
+              <source
+                type="image/webp"
+                srcSet={heroResponsiveWebpSrcSet(heroEditorial.src) ?? undefined}
+                sizes="100vw"
+              />
+              <img
+                src={heroEditorial.src}
+                alt={heroEditorial.alt}
+                width={1920}
+                height={1080}
+                decoding="async"
+                fetchPriority="high"
+                className="absolute inset-0 h-full w-full object-cover object-[center_18%] sm:object-[center_22%]"
+              />
+            </picture>
+          </span>
+        ) : (
+          <Image
+            src={heroEditorial.src}
+            alt={heroEditorial.alt}
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className={cn(
+              "object-cover object-[center_18%] sm:object-[center_22%]",
+              heroLoopVideoSrc && "hero-editorial-still--layered opacity-[0.84]",
+            )}
+          />
+        )}
         <div
           className="absolute inset-0 bg-gradient-to-b from-kabuki-navy/55 via-kabuki-navy/35 to-kabuki-navy/88"
           aria-hidden
@@ -159,6 +192,7 @@ export function LandingHero() {
           <MagneticWrap>
             <Link
               href="/book"
+              onClick={() => track("hero_cta_click", { target: "book" })}
               className="inline-flex h-14 min-w-[200px] items-center justify-center rounded-full bg-kabuki-pink px-8 text-sm font-semibold text-kabuki-navy shadow-[0_20px_60px_-20px_rgba(248,200,220,0.65)] transition hover:opacity-[0.97] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kabuki-white/90"
             >
               Book appointment
@@ -167,6 +201,7 @@ export function LandingHero() {
           <MagneticWrap>
             <Link
               href="/shop"
+              onClick={() => track("hero_cta_click", { target: "shop" })}
               className="inline-flex h-14 min-w-[200px] items-center justify-center rounded-full border border-white/28 bg-white/8 px-8 text-sm font-semibold text-white backdrop-blur-md transition hover:border-kabuki-pink/55 hover:bg-white/12 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-kabuki-pink/90"
             >
               Shop the ritual

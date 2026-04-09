@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 import type { Metadata } from "next";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatShopPrice } from "@/lib/format/money";
+import { sendTransactionalMessage } from "@/lib/notifications/send-transactional";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -60,6 +61,17 @@ async function updateOrderStatus(formData: FormData) {
       title: "Order update",
       body: `Your order is now ${status.replaceAll("_", " ")}.`,
       type: "order_status",
+    });
+    const { data: profile } = await admin
+      .from("profiles")
+      .select("phone")
+      .eq("id", existing.user_id)
+      .maybeSingle();
+    await sendTransactionalMessage({
+      toPhone: profile?.phone ?? null,
+      subject: "Order update",
+      html: `<p>Your order is now ${status.replaceAll("_", " ")}.</p>`,
+      smsText: `Order update: ${status.replaceAll("_", " ")}.`,
     });
   }
 

@@ -21,8 +21,70 @@ function appendAuditLog(
   return { ...prev, payment_events: [...arr, entry].slice(-20) };
 }
 
+type RpcResult = { ok?: boolean; reason?: string; status?: string };
+
+function rpcMissing(error: { message?: string; code?: string } | null): boolean {
+  if (!error) return false;
+  const msg = String(error.message ?? "");
+  return error.code === "42883" || msg.includes("finalize_order_payment") || msg.includes("does not exist");
+}
+
+async function legacyPaidPath(
+  admin: SupabaseClient,
+  orderId: string,
+  items: { product_id: string; quantity: number }[],
+  nextMeta: Record<string, unknown>,
+): Promise<{ ok: boolean; reason?: string }> {
+  const productIds = [...new Set(items.map((i) => i.product_id))];
+  const { data: products } = await admin.from("products").select("id, inventory").in("id", productIds);
+  const inv = new Map((products ?? []).map((p) => [p.id as string, Number(p.inventory)]));
+
+  for (const item of items) {
+    const available = inv.get(item.product_id) ?? 0;
+    if (available < Number(item.quantity)) {
+      await admin
+        .from("orders")
+        .update({
+          status: "failed",
+          updated_at: new Date().toISOString(),
+          metadata: appendAuditLog(nextMeta, {
+            at: new Date().toISOString(),
+            source: "inventory_guard",
+            product_id: item.product_id,
+            requested_qty: item.quantity,
+            available,
+          }),
+        })
+        .eq("id", orderId);
+      return { ok: false, reason: "Insufficient inventory to fulfill order." };
+    }
+  }
+
+  for (const item of items) {
+    const quantity = Number(item.quantity);
+    const available = inv.get(item.product_id) ?? 0;
+    await admin
+      .from("products")
+      .update({ inventory: available - quantity, updated_at: new Date().toISOString() })
+      .eq("id", item.product_id);
+    inv.set(item.product_id, available - quantity);
+  }
+
+  await admin
+    .from("orders")
+    .update({
+      status: "paid",
+      updated_at: new Date().toISOString(),
+      metadata: nextMeta,
+    })
+    .eq("id", orderId);
+
+  return { ok: true };
+}
+
 /**
  * Applies verified payment result to an order in an idempotent way.
+ * Prefers atomic `finalize_order_payment` RPC when available; falls back to legacy row updates.
  */
 export async function applyPaystackVerification(
   admin: SupabaseClient,
@@ -72,7 +134,6 @@ export async function applyPaystackVerification(
     return { ok: false, reason: "Payment mismatch.", orderId: order.id };
   }
 
-  // idempotent: if already terminal, only append audit metadata
   if (terminalStatuses.has(order.status)) {
     await admin
       .from("orders")
@@ -84,62 +145,61 @@ export async function applyPaystackVerification(
     return { ok: order.status === "paid", orderId: order.id };
   }
 
-  if (input.paid) {
-    const { data: items } = await admin
-      .from("order_items")
-      .select("product_id, quantity")
-      .eq("order_id", order.id);
-    if (!items || items.length === 0) {
-      return { ok: false, reason: "Missing order items for paid transaction.", orderId: order.id };
-    }
-
-    const productIds = [...new Set(items.map((i) => i.product_id))];
-    const { data: products } = await admin
-      .from("products")
-      .select("id, inventory")
-      .in("id", productIds);
-    const inv = new Map((products ?? []).map((p) => [p.id as string, Number(p.inventory)]));
-
-    for (const item of items) {
-      const available = inv.get(item.product_id) ?? 0;
-      if (available < Number(item.quantity)) {
-        await admin
-          .from("orders")
-          .update({
-            status: "failed",
-            updated_at: new Date().toISOString(),
-            metadata: appendAuditLog(nextMeta, {
-              at: new Date().toISOString(),
-              source: "inventory_guard",
-              product_id: item.product_id,
-              requested_qty: item.quantity,
-              available,
-            }),
-          })
-          .eq("id", order.id);
-        return { ok: false, reason: "Insufficient inventory to fulfill order.", orderId: order.id };
-      }
-    }
-
-    for (const item of items) {
-      const quantity = Number(item.quantity);
-      const available = inv.get(item.product_id) ?? 0;
-      await admin
-        .from("products")
-        .update({ inventory: available - quantity, updated_at: new Date().toISOString() })
-        .eq("id", item.product_id);
-      inv.set(item.product_id, available - quantity);
-    }
+  if (!input.paid) {
+    await admin
+      .from("orders")
+      .update({
+        status: "failed",
+        updated_at: new Date().toISOString(),
+        metadata: nextMeta,
+      })
+      .eq("id", order.id);
+    return { ok: false, orderId: order.id };
   }
 
-  await admin
-    .from("orders")
-    .update({
-      status: input.paid ? "paid" : "failed",
-      updated_at: new Date().toISOString(),
-      metadata: nextMeta,
-    })
-    .eq("id", order.id);
+  const { data: items } = await admin
+    .from("order_items")
+    .select("product_id, quantity")
+    .eq("order_id", order.id);
+  if (!items || items.length === 0) {
+    return { ok: false, reason: "Missing order items for paid transaction.", orderId: order.id };
+  }
 
-  return { ok: input.paid, orderId: order.id };
+  const effectiveMinor = input.amountMinor ?? totalMinor;
+  const { data: rpcData, error: rpcError } = await admin.rpc("finalize_order_payment", {
+    p_reference: input.reference,
+    p_paid: true,
+    p_amount_minor: effectiveMinor,
+    p_currency: input.currency ?? "",
+  });
+
+  if (!rpcError && rpcData) {
+    const r = rpcData as RpcResult;
+    if (r.ok === true || r.reason === "already_terminal") {
+      await admin
+        .from("orders")
+        .update({
+          updated_at: new Date().toISOString(),
+          metadata: nextMeta,
+        })
+        .eq("id", order.id);
+      const paid = r.ok === true || r.status === "paid";
+      return { ok: paid, orderId: order.id };
+    }
+    await admin
+      .from("orders")
+      .update({
+        updated_at: new Date().toISOString(),
+        metadata: nextMeta,
+      })
+      .eq("id", order.id);
+    return { ok: false, reason: r.reason ?? "payment_finalize_failed", orderId: order.id };
+  }
+
+  if (rpcMissing(rpcError)) {
+    const legacy = await legacyPaidPath(admin, order.id, items, nextMeta);
+    return { ok: legacy.ok, reason: legacy.reason, orderId: order.id };
+  }
+
+  return { ok: false, reason: rpcError?.message ?? "rpc_failed", orderId: order.id };
 }

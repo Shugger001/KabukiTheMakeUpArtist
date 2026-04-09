@@ -1,8 +1,12 @@
 import { z } from "zod";
 
+export const bridalPackageIds = ["none", "core", "signature", "editorial"] as const;
+export type BridalPackageId = (typeof bridalPackageIds)[number];
+
 export const bookingFormSchema = z
   .object({
     serviceId: z.string().uuid("Select a service"),
+    bridalPackage: z.enum(bridalPackageIds),
     startAt: z.string().min(1, "Pick a date and time"),
     locationType: z.enum(["studio", "home"]),
     address: z.string().optional(),

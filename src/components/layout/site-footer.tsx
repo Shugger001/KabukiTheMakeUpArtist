@@ -2,6 +2,8 @@ import Link from "next/link";
 import { KabukiLogo } from "@/components/brand/kabuki-logo";
 import { BRAND } from "@/lib/constants/brand";
 
+const googleBusinessUrl = process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL?.trim() || "https://maps.google.com";
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-kabuki-pink/25 bg-kabuki-navy text-kabuki-white">
@@ -50,6 +52,16 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
+              <Link href="/makeup-artist-accra" className="transition hover:text-white">
+                Makeup artist Accra
+              </Link>
+            </li>
+            <li>
+              <Link href="/bridal-makeup-kumasi" className="transition hover:text-white">
+                Bridal makeup Kumasi
+              </Link>
+            </li>
+            <li>
               <Link href="/admin" className="transition hover:text-white">
                 Studio login
               </Link>
@@ -65,6 +77,14 @@ export function SiteFooter() {
             className="text-sm text-white/75 transition hover:text-white"
           >
             {BRAND.links.email}
+          </a>
+          <a
+            href={googleBusinessUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 block text-sm text-white/75 transition hover:text-white"
+          >
+            Google Business
           </a>
         </div>
       </div>

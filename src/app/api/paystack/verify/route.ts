@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { applyPaystackVerification } from "@/lib/payments/paystack-order-state";
+import { rateLimit } from "@/lib/security/rate-limit";
 
 const querySchema = z.object({
   reference: z.string().min(3),
@@ -12,6 +13,10 @@ const querySchema = z.object({
  * Call from a Route Handler or Server Action after redirect (never trust client-only checks).
  */
 export async function GET(request: Request) {
+  const origin = request.headers.get("x-forwarded-for") ?? request.headers.get("host") ?? "unknown";
+  if (!rateLimit(`paystack-verify:${origin}`, 40, 60_000)) {
+    return NextResponse.json({ ok: false, error: "Too many verify requests." }, { status: 429 });
+  }
   const secret = process.env.PAYSTACK_SECRET_KEY;
   if (!secret) {
     return NextResponse.json(

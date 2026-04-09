@@ -14,10 +14,12 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const p = new URLSearchParams(window.location.search).get("next");
-      if (p) setNextPath(p);
-    }
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const p = params.get("next");
+    if (p) setNextPath(p);
+    const ref = params.get("ref");
+    if (ref?.trim()) localStorage.setItem("kabuki_pending_referral", ref.trim().toUpperCase());
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -50,12 +52,20 @@ export default function AuthPage() {
         toast.error(error.message);
         return;
       }
-      const bootstrapRes = await fetch("/api/auth/bootstrap-profile", { method: "POST" });
+      const pending =
+        typeof window !== "undefined" ? localStorage.getItem("kabuki_pending_referral") : null;
+      const bootstrapRes = await fetch("/api/auth/bootstrap-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pending ? { referralCode: pending } : {}),
+      });
       if (!bootstrapRes.ok) {
         const payload = (await bootstrapRes.json().catch(() => ({}))) as { error?: string };
         toast.message("Signed in, but profile bootstrap needs attention.", {
           description: payload.error ?? "Please contact support if account data looks incomplete.",
         });
+      } else if (pending) {
+        localStorage.removeItem("kabuki_pending_referral");
       }
       toast.success("Signed in");
       router.push(nextPath);

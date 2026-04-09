@@ -4,8 +4,10 @@ import Image from "next/image";
 import { m } from "framer-motion";
 import { Reveal } from "@/components/motion/reveal";
 import { galleryEditorial } from "@/lib/constants/editorial-media";
+import { useState } from "react";
 
 export function GalleryStrip() {
+  const [slider, setSlider] = useState(52);
   return (
     <section className="bg-kabuki-navy py-24 text-kabuki-white sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -17,6 +19,40 @@ export function GalleryStrip() {
             Light, texture, and tone — for every complexion.
           </h2>
         </Reveal>
+        <div className="mt-10 rounded-3xl border border-white/15 bg-white/5 p-4">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-white/70">
+            Before / after lighting check
+          </p>
+          <div className="relative mt-3 aspect-[16/9] overflow-hidden rounded-2xl">
+            <Image
+              src={galleryEditorial[0].src}
+              alt="Before makeup balancing"
+              fill
+              sizes="(max-width: 1024px) 100vw, 960px"
+              className="object-cover"
+            />
+            <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - slider}% 0 0)` }}>
+              <Image
+                src={galleryEditorial[3].src}
+                alt="After makeup balancing"
+                fill
+                sizes="(max-width: 1024px) 100vw, 960px"
+                className="object-cover saturate-110"
+              />
+            </div>
+          </div>
+          <label className="mt-3 block text-xs text-white/70">
+            Slide to compare
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={slider}
+              onChange={(e) => setSlider(Number(e.target.value))}
+              className="mt-2 w-full accent-kabuki-pink"
+            />
+          </label>
+        </div>
 
         <div className="mt-14 columns-2 gap-4 sm:columns-3 lg:gap-5">
           {galleryEditorial.map((item, i) => (

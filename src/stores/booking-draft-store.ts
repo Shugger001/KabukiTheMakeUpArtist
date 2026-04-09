@@ -1,9 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { BookingLocation } from "@/types/database";
+import type { BridalPackageId } from "@/lib/validation/booking";
 
 export interface BookingDraft {
   serviceId: string | null;
+  bridalPackage: BridalPackageId;
   startAt: string | null;
   locationType: BookingLocation;
   address: string;
@@ -18,6 +20,7 @@ interface BookingDraftState extends BookingDraft {
 
 const initial: BookingDraft = {
   serviceId: null,
+  bridalPackage: "none",
   startAt: null,
   locationType: "studio",
   address: "",

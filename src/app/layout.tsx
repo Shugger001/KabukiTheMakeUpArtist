@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { AnalyticsScripts } from "@/components/analytics/analytics-scripts";
 import { AppProviders } from "@/components/providers/app-providers";
 import { BRAND } from "@/lib/constants/brand";
 import { MARKET } from "@/lib/constants/market";
@@ -82,6 +83,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col" suppressHydrationWarning>
+        <AnalyticsScripts />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

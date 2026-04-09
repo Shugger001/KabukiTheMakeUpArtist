@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
 import { formatShopPrice } from "@/lib/format/money";
+import { track } from "@/lib/analytics/track";
 
 export function CartClient() {
   const { lines, setQuantity, removeLine, clear } = useCartStore();
@@ -23,6 +24,7 @@ export function CartClient() {
       const data = await res.json();
       if (cancelled) return;
       if (data.ok) {
+        track("payment_success", { reference });
         toast.success("Payment confirmed", { description: "Thank you — your order is processing." });
         clear();
       } else if (data.error) {
@@ -46,6 +48,7 @@ export function CartClient() {
       return;
     }
     setLoading(true);
+    track("checkout_start", { lines: lines.length, subtotal });
     try {
       const res = await fetch("/api/paystack/initialize", {
         method: "POST",

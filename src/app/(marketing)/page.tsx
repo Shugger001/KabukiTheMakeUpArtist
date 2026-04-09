@@ -7,11 +7,13 @@ import { PressStrip } from "@/components/landing/press-strip";
 import { StatsRow } from "@/components/landing/stats-row";
 import { EditorPickStrip } from "@/components/landing/editor-pick-strip";
 import { SectionDivider } from "@/components/landing/section-divider";
+import { TrustConversionBlock } from "@/components/landing/trust-conversion-block";
 
 export default function HomePage() {
   return (
     <>
       <LandingHero />
+      <TrustConversionBlock />
       <PressStrip />
       <StatsRow />
       <StorySection />
