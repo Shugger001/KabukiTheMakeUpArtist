@@ -1,10 +1,12 @@
+import { VOICES_ATTRIBUTIONS } from "@/lib/constants/voices-from-ghana";
+
 /**
  * Server Component — testimonial names and quotes are rendered in the initial HTML so they are
  * not dependent on cached client bundles (PWA / aggressive browser cache).
  */
 const quotes = [
   {
-    attribution: "Matilda from Tema",
+    attribution: VOICES_ATTRIBUTIONS[0],
     role: "Bride",
     quote: (
       <>
@@ -14,7 +16,7 @@ const quotes = [
     ),
   },
   {
-    attribution: "Fafa from Pokuase",
+    attribution: VOICES_ATTRIBUTIONS[1],
     role: "Bride",
     quote: (
       <>
@@ -24,7 +26,7 @@ const quotes = [
     ),
   },
   {
-    attribution: "Malwine from Cape Coast",
+    attribution: VOICES_ATTRIBUTIONS[2],
     role: "Bride",
     quote: (
       <>
@@ -37,7 +39,11 @@ const quotes = [
 
 export function TestimonialsSection() {
   return (
-    <section className="bg-kabuki-white py-24 sm:py-32">
+    <section
+      id="voices-from-ghana"
+      className="bg-kabuki-white py-24 sm:py-32"
+      data-voices={VOICES_ATTRIBUTIONS.join("|")}
+    >
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <div>
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.42em] text-kabuki-navy/38 sm:text-xs sm:tracking-[0.46em]">

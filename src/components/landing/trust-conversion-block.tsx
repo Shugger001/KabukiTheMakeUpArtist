@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";
 import { m } from "framer-motion";
+import { VOICES_ATTRIBUTIONS } from "@/lib/constants/voices-from-ghana";
 
 const trustStats = [
   { label: "Weddings, traditional & editorial", value: "Bridal+" },
@@ -12,20 +13,20 @@ const trustStats = [
 
 const testimonials = [
   {
-    attribution: "Matilda from Tema",
+    attribution: VOICES_ATTRIBUTIONS[0],
     role: "Bride",
     quote: "She understood my skin and my culture — I have never felt more myself, just elevated.",
     image: "/editorial/hero-imported.png",
   },
   {
-    attribution: "Fafa from Pokuase",
+    attribution: VOICES_ATTRIBUTIONS[1],
     role: "Bride",
     quote: "Every brushstroke intentional — she truly gets how our humidity behaves on the skin.",
     image:
       "https://images.unsplash.com/photo-1597393922738-085ea04b5a07?auto=format&fit=crop&w=700&q=80",
   },
   {
-    attribution: "Malwine from Cape Coast",
+    attribution: VOICES_ATTRIBUTIONS[2],
     role: "Bride",
     quote: "Punctual, immaculate kit, and a look that held from sun to dance floor.",
     image:
