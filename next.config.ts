@@ -3,25 +3,15 @@ import path from "path";
 import withPWAInit from "@ducanh2912/next-pwa";
 
 /**
- * PWA is opt-in: the default Workbox recipe caches navigations (`pages` / `start-url`)
- * for up to 24h, so repeat visitors often saw **stale JS/HTML** (e.g. old testimonial names)
- * after deploy. Set `NEXT_PUBLIC_ENABLE_PWA=true` on Vercel only if you need install/offline
- * and are OK tuning caching further.
+ * Do not run next-pwa at all unless explicitly enabled. Wrapping with `disable: true` still
+ * risked registration/caching edge cases; skipping the plugin entirely avoids generating `sw.js`.
+ *
+ * Set `NEXT_PUBLIC_ENABLE_PWA=true` on Vercel only if you need install/offline (then tune Workbox).
  */
-const pwaEnabled =
+const enablePwa =
   process.env.NODE_ENV === "production" && process.env.NEXT_PUBLIC_ENABLE_PWA === "true";
 
-const withPWA = withPWAInit({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development" || !pwaEnabled,
-  register: true,
-  cacheStartUrl: false,
-  fallbacks: {
-    document: "/offline",
-  },
-});
-
-const nextConfig: NextConfig = {
+const baseConfig: NextConfig = {
   outputFileTracingRoot: path.resolve(process.cwd()),
   images: {
     remotePatterns: [
@@ -43,4 +33,16 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+const nextConfig: NextConfig = enablePwa
+  ? withPWAInit({
+      dest: "public",
+      disable: false,
+      register: true,
+      cacheStartUrl: false,
+      fallbacks: {
+        document: "/offline",
+      },
+    })(baseConfig)
+  : baseConfig;
+
+export default nextConfig;
