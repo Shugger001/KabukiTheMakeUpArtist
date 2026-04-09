@@ -3,9 +3,9 @@
 import { Reveal } from "@/components/motion/reveal";
 
 const stats = [
-  { label: "Years in chair", value: "12+" },
-  { label: "Faces across Africa", value: "800+" },
-  { label: "Brides & milestones", value: "500+" },
+  { label: "Traditional & family celebrations", value: "Trad+" },
+  { label: "Preview your wedding look", value: "Trials" },
+  { label: "Accra studio · travel on request", value: "Ghana" },
 ];
 
 export function StatsRow() {

@@ -210,8 +210,9 @@ export function BookingWizard({ services }: BookingWizardProps) {
   return (
     <div className="mx-auto max-w-2xl">
       <p className="mb-6 rounded-2xl border border-kabuki-pink/25 bg-white/70 px-4 py-3 text-sm text-kabuki-navy/65 shadow-[var(--shadow-glass)] backdrop-blur-sm">
-        <span className="font-semibold text-kabuki-navy">Progress saved</span> on this device — your
-        selections stay put if you leave and come back.
+        <span className="font-semibold text-kabuki-navy">Progress saved</span> on this device — wedding
+        days, traditional ceremonies, and editorial sessions all start here. Your selections stay put if
+        you leave and come back.
       </p>
       <div className="mb-10 flex gap-2" role="tablist" aria-label="Booking steps">
         {steps.map((label, i) => (

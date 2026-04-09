@@ -5,9 +5,9 @@ import { Reveal } from "@/components/motion/reveal";
 import { m } from "framer-motion";
 
 const trustStats = [
-  { label: "Verified bridal bookings", value: "500+" },
-  { label: "Editorial faces completed", value: "800+" },
-  { label: "Client satisfaction follow-ups", value: "98%" },
+  { label: "Weddings, traditional & editorial", value: "Bridal+" },
+  { label: "Studio visits & travel days", value: "Accra +" },
+  { label: "Heat, humidity & flashback aware", value: "Skin-led" },
 ];
 
 const testimonials = [
@@ -34,10 +34,11 @@ const testimonials = [
 ];
 
 const recentReel = [
-  "Bridal prep · East Legon",
-  "Editorial beauty · Osu studio",
+  "Bride prep · Tema",
+  "Bride · Pokuase",
+  "Bride · Cape Coast",
   "Traditional ceremony · Kumasi",
-  "Private glam callout · Cantonments",
+  "Editorial beauty · Osu studio",
 ];
 
 export function TrustConversionBlock() {
