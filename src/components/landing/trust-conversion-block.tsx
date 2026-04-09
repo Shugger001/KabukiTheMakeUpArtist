@@ -12,17 +12,24 @@ const trustStats = [
 
 const testimonials = [
   {
-    name: "Adwoa",
-    context: "Bride · Accra",
-    quote: "Natural in daylight, flawless by evening. Exactly what I asked for.",
+    name: "Matilda",
+    context: "Bride · Tema",
+    quote: "She understood my skin and my culture — I have never felt more myself, just elevated.",
     image: "/editorial/hero-imported.png",
   },
   {
-    name: "Esi",
-    context: "Brand campaign · Airport City",
-    quote: "Precise shade matching for deep skin tones and zero flashback on set.",
+    name: "Fafa",
+    context: "Bride · Pokuase",
+    quote: "Every brushstroke intentional — she truly gets how our humidity behaves on the skin.",
     image:
       "https://images.unsplash.com/photo-1597393922738-085ea04b5a07?auto=format&fit=crop&w=700&q=80",
+  },
+  {
+    name: "Malwine",
+    context: "Bride · Cape Coast",
+    quote: "Punctual, immaculate kit, and a look that held from sun to dance floor.",
+    image:
+      "https://images.unsplash.com/photo-1583147610149-78ac5cb5a303?auto=format&fit=crop&w=700&q=80",
   },
 ];
 
@@ -39,10 +46,10 @@ export function TrustConversionBlock() {
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <Reveal>
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-kabuki-navy/40">
-            Proof that converts
+            Brides first
           </p>
           <h2 className="mt-3 max-w-3xl font-display text-[clamp(1.8rem,4vw,2.8rem)] tracking-[-0.02em] text-kabuki-navy">
-            Trusted by brides, brands, and private clients across Ghana.
+            Trusted by brides (and brands) across Ghana — from Tema to Cape Coast.
           </h2>
         </Reveal>
 
@@ -64,7 +71,7 @@ export function TrustConversionBlock() {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-5 md:grid-cols-2">
+        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((item, i) => (
             <m.article
               key={item.name}
@@ -74,8 +81,14 @@ export function TrustConversionBlock() {
               transition={{ duration: 0.5, delay: 0.05 * i }}
               className="flex gap-4 rounded-3xl border border-kabuki-pink/25 bg-white p-4 shadow-soft"
             >
-              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl">
-                <Image src={item.image} alt={`${item.name} portrait`} fill sizes="80px" className="object-cover" />
+              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl" aria-hidden>
+                <Image
+                  src={item.image}
+                  alt=""
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                />
               </div>
               <div>
                 <p className="font-semibold text-kabuki-navy">{item.name}</p>

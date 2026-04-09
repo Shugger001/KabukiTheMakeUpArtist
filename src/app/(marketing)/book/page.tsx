@@ -7,7 +7,7 @@ import { getLiveServices } from "@/lib/data/live-services";
 
 export const metadata: Metadata = {
   title: "Book an appointment",
-  description: `Reserve a luxury makeup session in ${MARKET.city} — studio or on-location across ${MARKET.country}.`,
+  description: `Book bridal trials, wedding day makeup, and studio or on-location sessions in ${MARKET.city} and across ${MARKET.country}.`,
 };
 
 export default async function BookPage() {

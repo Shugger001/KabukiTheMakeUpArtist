@@ -208,7 +208,7 @@ export default async function AdminCrmPage({ searchParams }: { searchParams: Sea
           <input
             name="q"
             defaultValue={q}
-            placeholder="Ama, Naa, Efua..."
+            placeholder="Matilda, Fafa, Malwine..."
             className="w-full rounded-lg border border-white/15 bg-transparent px-3 py-2 text-sm text-white"
           />
         </form>
