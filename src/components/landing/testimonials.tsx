@@ -11,28 +11,29 @@ const quotes = [
         felt more myself — just <span className="italic">elevated</span>.
       </>
     ),
-    name: "Matilda",
-    context: "Bride · Tema",
+    /** Client-specified attributions (must match booking / trust block). */
+    attribution: "Matilda from Tema",
+    role: "Bride",
   },
   {
     quote: (
       <>
-        The studio felt like a <span className="italic">sanctuary</span>. Every brushstroke
+        The studio felt like a <span className="italic">sanctuary</span> in Accra. Every brushstroke
         intentional — she truly gets how our humidity behaves on the skin.
       </>
     ),
-    name: "Fafa",
-    context: "Bride · Pokuase",
+    attribution: "Fafa from Pokuase",
+    role: "Bride",
   },
   {
     quote: (
       <>
-        Punctual, immaculate kit, and a look that held through the full reception —
-        <span className="italic">from sun to dance floor</span>.
+        Home visit was seamless. Punctual, immaculate kit, and a look that held through the full
+        reception — <span className="italic">from sun to dance floor</span>.
       </>
     ),
-    name: "Malwine",
-    context: "Bride · Cape Coast",
+    attribution: "Malwine from Cape Coast",
+    role: "Bride",
   },
 ];
 
@@ -56,7 +57,7 @@ export function TestimonialsSection() {
         <div className="mt-14 grid gap-8 lg:grid-cols-3">
           {quotes.map((q, i) => (
             <m.blockquote
-              key={q.name}
+              key={q.attribution}
               className="flex flex-col justify-between rounded-3xl border border-kabuki-pink/25 bg-kabuki-grey/40 p-8 shadow-soft"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -71,9 +72,9 @@ export function TestimonialsSection() {
                 &ldquo;{q.quote}&rdquo;
               </p>
               <footer className="mt-8 border-t border-kabuki-pink/20 pt-6">
-                <p className="text-sm font-semibold text-kabuki-navy">{q.name}</p>
+                <p className="text-sm font-semibold text-kabuki-navy">{q.attribution}</p>
                 <p className="text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-kabuki-navy/45 sm:tracking-[0.26em]">
-                  {q.context}
+                  {q.role}
                 </p>
               </footer>
             </m.blockquote>
@@ -81,7 +82,7 @@ export function TestimonialsSection() {
         </div>
 
         <p className="mx-auto mt-10 max-w-xl text-center text-[0.65rem] leading-relaxed text-kabuki-navy/45">
-          Quotes may be shortened for readability; each name is a real bride from that area.
+          Quotes may be shortened for readability; each attribution is a real bride from that town.
         </p>
       </div>
     </section>

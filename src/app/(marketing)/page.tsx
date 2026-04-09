@@ -1,6 +1,9 @@
 import { LandingHero } from "@/components/landing/hero";
 import { StorySection } from "@/components/landing/story-section";
 import { TestimonialsSection } from "@/components/landing/testimonials";
+
+/** Fresh HTML each request so testimonial/name updates are not stuck behind stale CDN or SW caches. */
+export const dynamic = "force-dynamic";
 import { GalleryStrip } from "@/components/landing/gallery-strip";
 import { CtaBand } from "@/components/landing/cta-band";
 import { PressStrip } from "@/components/landing/press-strip";

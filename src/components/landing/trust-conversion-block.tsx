@@ -12,21 +12,21 @@ const trustStats = [
 
 const testimonials = [
   {
-    name: "Matilda",
-    context: "Bride · Tema",
+    attribution: "Matilda from Tema",
+    role: "Bride",
     quote: "She understood my skin and my culture — I have never felt more myself, just elevated.",
     image: "/editorial/hero-imported.png",
   },
   {
-    name: "Fafa",
-    context: "Bride · Pokuase",
+    attribution: "Fafa from Pokuase",
+    role: "Bride",
     quote: "Every brushstroke intentional — she truly gets how our humidity behaves on the skin.",
     image:
       "https://images.unsplash.com/photo-1597393922738-085ea04b5a07?auto=format&fit=crop&w=700&q=80",
   },
   {
-    name: "Malwine",
-    context: "Bride · Cape Coast",
+    attribution: "Malwine from Cape Coast",
+    role: "Bride",
     quote: "Punctual, immaculate kit, and a look that held from sun to dance floor.",
     image:
       "https://images.unsplash.com/photo-1583147610149-78ac5cb5a303?auto=format&fit=crop&w=700&q=80",
@@ -75,7 +75,7 @@ export function TrustConversionBlock() {
         <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((item, i) => (
             <m.article
-              key={item.name}
+              key={item.attribution}
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-8%" }}
@@ -92,8 +92,8 @@ export function TrustConversionBlock() {
                 />
               </div>
               <div>
-                <p className="font-semibold text-kabuki-navy">{item.name}</p>
-                <p className="text-xs uppercase tracking-[0.16em] text-kabuki-navy/45">{item.context}</p>
+                <p className="font-semibold text-kabuki-navy">{item.attribution}</p>
+                <p className="text-xs uppercase tracking-[0.16em] text-kabuki-navy/45">{item.role}</p>
                 <p className="mt-2 text-sm leading-relaxed text-kabuki-navy/72">&ldquo;{item.quote}&rdquo;</p>
               </div>
             </m.article>
@@ -101,8 +101,8 @@ export function TrustConversionBlock() {
         </div>
 
         <p className="mx-auto mt-4 max-w-xl text-center text-[0.65rem] leading-relaxed text-kabuki-navy/45">
-          Thumbnail photos are illustrative stock imagery. Named voices are real brides from those
-          towns, as shared for the site.
+          Thumbnail photos are illustrative stock imagery. Matilda from Tema, Fafa from Pokuase, and
+          Malwine from Cape Coast are real brides Kabuki has worked with, as shared for the site.
         </p>
 
         <div className="mt-8 rounded-3xl border border-kabuki-navy/10 bg-kabuki-navy px-5 py-5 text-kabuki-white">
