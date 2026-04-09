@@ -57,7 +57,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: BRAND.fullName,
-    description: `Luxury makeup in ${MARKET.city} — editorial artistry for Ghana & Africa.`,
+    description: `Luxury bridal and editorial makeup in ${MARKET.city} — for Ghana and across Africa.`,
     images: ["/og.png"],
   },
 };

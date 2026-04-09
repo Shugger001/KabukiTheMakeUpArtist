@@ -3,10 +3,12 @@
 import { LazyMotion, domAnimation } from "framer-motion";
 import { Toaster } from "sonner";
 import { PostHogInit } from "@/components/analytics/posthog-init";
+import { ClearStalePwa } from "@/components/pwa/clear-stale-pwa";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <LazyMotion features={domAnimation} strict>
+      <ClearStalePwa />
       <PostHogInit />
       {children}
       <Toaster
