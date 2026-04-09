@@ -11,7 +11,7 @@ const chapters = [
   {
     title: "Editorial discipline",
     body:
-      "Structure without severity — the same polish you see on magazine sets and bridal stages from Lagos to London. Soft focus where it flatters, precision where it defines.",
+      "Structure without severity — camera-ready polish for photographs and film, from courtyard vows to reception halls in Accra and abroad. Soft focus where it flatters, precision where it defines.",
   },
   {
     title: "Your light, amplified",

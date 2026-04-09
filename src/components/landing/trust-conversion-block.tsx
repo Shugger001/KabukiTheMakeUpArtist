@@ -100,6 +100,11 @@ export function TrustConversionBlock() {
           ))}
         </div>
 
+        <p className="mx-auto mt-4 max-w-xl text-center text-[0.65rem] leading-relaxed text-kabuki-navy/45">
+          Thumbnail photos are illustrative stock imagery. Named voices are real brides from those
+          towns, as shared for the site.
+        </p>
+
         <div className="mt-8 rounded-3xl border border-kabuki-navy/10 bg-kabuki-navy px-5 py-5 text-kabuki-white">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-kabuki-pink/85">Recent work reel</p>
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1 text-sm">

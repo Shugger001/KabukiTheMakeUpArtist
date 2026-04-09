@@ -11,7 +11,8 @@ export function SiteFooter() {
         <div className="space-y-4">
           <KabukiLogo variant="onDark" className="max-w-[240px]" />
           <p className="max-w-xs text-sm leading-relaxed text-white/65">
-            Editorial beauty artistry — bespoke makeup for moments that deserve to be remembered.
+            Bridal and editorial makeup artistry — bespoke looks for weddings, traditional events, and
+            celebrations worth remembering.
           </p>
         </div>
         <div>

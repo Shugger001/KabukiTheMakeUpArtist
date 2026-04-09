@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: `${BRAND.fullName} — Luxury Makeup · ${MARKET.city}, ${MARKET.country}`,
     template: `%s · ${BRAND.name}`,
   },
-  description: `Accra-based luxury makeup artistry for Ghana and clients across Africa — ${BRAND.fullName}.`,
+  description: `${MARKET.city}-based luxury makeup and bridal artistry for ${MARKET.country} and clients across Africa — ${BRAND.fullName}.`,
   applicationName: BRAND.fullName,
   icons: {
     icon: [{ url: BRAND.logo.src, type: "image/png" }],
@@ -44,13 +44,13 @@ export const metadata: Metadata = {
     locale: "en_GH",
     siteName: BRAND.fullName,
     title: BRAND.fullName,
-    description: `Luxury makeup in ${MARKET.city}, ${MARKET.country} — bespoke looks for African skin and celebration.`,
+    description: `Luxury bridal and editorial makeup in ${MARKET.city}, ${MARKET.country} — bespoke looks for African skin and celebration.`,
     images: [
       {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Kabuki The MakeUp Girl — Luxury makeup artistry",
+        alt: "Kabuki The MakeUp Girl — Bridal and luxury makeup artistry",
       },
     ],
   },

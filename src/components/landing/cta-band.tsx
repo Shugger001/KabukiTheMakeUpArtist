@@ -17,11 +17,12 @@ export function CtaBand() {
         transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
       >
         <h2 className="font-display text-3xl tracking-tight text-kabuki-navy sm:text-5xl">
-          Reserve your transformation
+          Reserve your date
         </h2>
         <p className="mx-auto mt-5 max-w-lg text-kabuki-navy/60">
-          Limited studio days in {MARKET.city} each month. Secure your slot — we confirm every
-          booking personally, from Ghana to destination weddings abroad.
+          By appointment in {MARKET.city} — studio or on-location. We confirm every booking
+          personally: bridal trials, traditional ceremonies, editorial days, and destination
+          weddings when travel is arranged.
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <MagneticWrap>

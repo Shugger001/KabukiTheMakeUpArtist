@@ -79,6 +79,10 @@ export function TestimonialsSection() {
             </m.blockquote>
           ))}
         </div>
+
+        <p className="mx-auto mt-10 max-w-xl text-center text-[0.65rem] leading-relaxed text-kabuki-navy/45">
+          Quotes may be shortened for readability; each name is a real bride from that area.
+        </p>
       </div>
     </section>
   );

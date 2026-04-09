@@ -176,9 +176,9 @@ export function LandingHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
           >
-            {BRAND.fullName} is {MARKET.city}-based, serving clients across {MARKET.audienceDescriptor}{" "}
-            — luminous, editorial-ready looks with a soft-meets-structural philosophy, tailored to
-            African skin tones, your story, and the light you{" "}
+            {BRAND.fullName} is {MARKET.city}-based, serving brides and clients across{" "}
+            {MARKET.audienceDescriptor} — luminous, editorial-ready looks with a soft-meets-structural
+            philosophy, tailored to African skin tones, your story, and the light you{" "}
             <span className="font-display italic text-white/85">walk</span> into.
           </m.p>
         </div>
